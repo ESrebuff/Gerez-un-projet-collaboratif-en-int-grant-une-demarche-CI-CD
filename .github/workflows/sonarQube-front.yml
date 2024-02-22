@@ -27,6 +27,7 @@ jobs:
         uses: SonarSource/sonarcloud-github-action@master
         with:
           args: >
+            -X
             -Dsonar.projectKey=ESrebuff_Gerez-un-projet-collaboratif-en-int-grant-une-demarche-CI-CD
             -Dsonar.organization=esrebuff
             -Dsonar.host.url=https://sonarcloud.io
