@@ -1,4 +1,4 @@
-name: Build and Analyze on SonarCloud
+name: Analyze on SonarCloud
 
 on:
   push:
@@ -7,7 +7,7 @@ on:
     branches: ["main"]
 
 jobs:
-  build-and-analyze-back:
+  analyze-back:
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -39,7 +39,7 @@ jobs:
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
-  build-and-analyze-front:
+  analyze-front:
     runs-on: ubuntu-latest
     strategy:
       matrix:

@@ -1,4 +1,4 @@
-name: Java CI with Maven
+name: Test front and back
 
 on:
   push:
@@ -7,7 +7,7 @@ on:
     branches: ["main"]
 
 jobs:
-  build-back:
+  test-back:
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -28,7 +28,7 @@ jobs:
           name: jacoco-coverage-report
           path: back/target/site/jacoco
 
-  build-front:
+  test-front:
     runs-on: ubuntu-latest
     strategy:
       matrix:
