@@ -48,8 +48,9 @@ jobs:
 
       - name: SonarCloud Scan front
         uses: SonarSource/sonarcloud-github-action@master
+        working-directory: ./front
+        run: |
+          npm install
+          npm run sonar-scanner
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        working-directory: front
-        run: npm install
-        run: npm run sonar-scanner
