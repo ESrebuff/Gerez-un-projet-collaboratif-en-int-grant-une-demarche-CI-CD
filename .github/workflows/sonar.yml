@@ -34,35 +34,26 @@ jobs:
       - name: Build and analyze
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        run: |
-          cd back
-          mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=ESrebuff_Gerez-un-projet-collaboratif-en-int-grant-une-demarche-CI-CD
+        run: mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=esrebuff_bobapp-back
 
-  # frontend-analysis:
-  #   name: Analyse Frontend Angular
-  #   needs: backend-analysis
+  # front-end:
+  #   name: Front-end
   #   runs-on: ubuntu-latest
+  #   defaults:
+  #     run:
+  #       working-directory: ./front
   #   steps:
-  #   - uses: actions/checkout@v2
-  #   - name: Use Node.js
-  #     uses: actions/setup-node@v2
-  #     with:
-  #       node-version: '14'
-  #   - name: Cache node modules
-  #     uses: actions/cache@v2
-  #     with:
-  #       path: front/node_modules
-  #       key: ${{ runner.os }}-node-${{ hashFiles('front/package-lock.json') }}
-  #       restore-keys: ${{ runner.os }}-node
-  #   - name: Install dependencies
-  #     run: |
-  #       cd front
-  #       npm install
-  #   - name: Build and analyze
-  #     env:
-  #       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-  #       SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-  #     run: |
-  #       cd front
-  #       npm run build -- --prod
-  #       sonar-scanner -Dsonar.projectKey=YOUR_PROJECT_KEY_FRONT -Dsonar.sources=. -Dsonar.host.url=https://sonarcloud.io -Dsonar.login=${{ secrets.SONAR_TOKEN }}
+  #     - uses: actions/checkout@master
+  #       with:
+  #         fetch-depth: 0
+
+  #     - name: SonarCloud Scan
+  #       uses: sonarsource/sonarcloud-github-action@master
+  #       with:
+  #         projectBaseDir: front
+  #         args: >
+  #           -Dsonar.organization=paulmarniquet
+  #           -Dsonar.projectKey=bobapp_frontend
+  #           -Dsonar.sources=src/
+  #       env:
+  #         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
