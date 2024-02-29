@@ -37,6 +37,7 @@ jobs:
             -Dsonar.projectKey=ESrebuff_Gerez-un-projet-collaboratif-en-int-grant-une-demarche-CI-CD
             -Dsonar.organization=esrebuff
             -Dsonar.java.binaries=./back/target/classes
+            -Dsonar.projectName="BobApp back"
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
@@ -62,8 +63,9 @@ jobs:
         uses: SonarSource/sonarcloud-github-action@master
         with:
           args: >
-            -Dsonar.projectKey=ESrebuff_Gerez-un-projet-collaboratif-en-int-grant-une-demarche-CI-CD_front
+            -Dsonar.projectKey=ESrebuff_Gerez-un-projet-collaboratif-en-int-grant-une-demarche-CI-CD
             -Dsonar.organization=esrebuff
             -Dsonar.projectBaseDir=front/
+            -Dsonar.projectName="BobApp front"
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
