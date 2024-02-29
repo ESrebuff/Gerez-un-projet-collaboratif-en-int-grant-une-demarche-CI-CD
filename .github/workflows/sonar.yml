@@ -61,6 +61,9 @@ jobs:
       - name: Analyze on SonarCloud
         uses: SonarSource/sonarcloud-github-action@master
         with:
-          projectBaseDir: front
+          args: >
+            -Dsonar.projectKey=ESrebuff_Gerez-un-projet-collaboratif-en-int-grant-une-demarche-CI-CD_front
+            -Dsonar.organization=esrebuff
+            -Dsonar.projectBaseDir=front/
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
