@@ -8,7 +8,7 @@ on:
 
 jobs:
   build:
-    name: Build and analyze
+    name: Build and analyze back
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -19,22 +19,34 @@ jobs:
         with:
           java-version: 17
           distribution: 'zulu' # Alternative distribution options are available.
-      - name: Cache SonarCloud packages
+      - name: Cache SonarCloud packages back
         uses: actions/cache@v3
         with:
           path: ~/.sonar/cache
           key: ${{ runner.os }}-sonar
           restore-keys: ${{ runner.os }}-sonar
-      - name: Cache Maven packages
+      - name: Cache Maven packages back
         uses: actions/cache@v3
         with:
           path: ~/.m2
           key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
           restore-keys: ${{ runner.os }}-m2
-          
-      - name: Build and analyze
+
+      - name: Build and analyze back
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         working-directory: back
         run: mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=esrebuff_bobapp-back
-        
+
+jobs:
+  sonarcloud:
+    name: SonarCloud front
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
+      - name: SonarCloud Scan front
+        uses: SonarSource/sonarcloud-github-action@master
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
