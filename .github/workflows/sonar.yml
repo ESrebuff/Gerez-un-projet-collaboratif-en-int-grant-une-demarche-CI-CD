@@ -1,87 +1,71 @@
-name: SonarCloud
+name: Analyze on SonarCloud
+
 on:
   push:
-    branches:
-      - main
+    branches: ["main"]
   pull_request:
-    types: [opened, synchronize, reopened]
+    branches: ["main"]
+
 jobs:
-  build:
-    name: Build and analyze
+  analyze-back:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./back
     steps:
       - uses: actions/checkout@v3
         with:
-          fetch-depth: 0 # Shallow clones should be disabled for a better relevancy of analysis
+          fetch-depth: 0
       - name: Set up JDK 17
         uses: actions/setup-java@v3
         with:
           java-version: 17
-          distribution: "zulu" # Alternative distribution options are available.
-      - name: Cache SonarCloud packages
-        uses: actions/cache@v3
-        with:
-          path: ~/.sonar/cache
-          key: ${{ runner.os }}-sonar
-          restore-keys: ${{ runner.os }}-sonar
+          distribution: "temurin"
+          cache: maven
       - name: Cache Maven packages
-        uses: actions/cache@v3
+        uses: actions/cache@v2
         with:
           path: ~/.m2
           key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
           restore-keys: ${{ runner.os }}-m2
-      - name: Build and analyze
+      - name: Build with Maven
+        run: mvn clean verify
+      - name: Analyze on SonarCloud
+        uses: SonarSource/sonarcloud-github-action@master
+        with:
+          args: >
+            -Dsonar.projectKey=ESrebuff_Gerez-un-projet-collaboratif-en-int-grant-une-demarche-CI-CD
+            -Dsonar.organization=esrebuff
+            -Dsonar.java.binaries=./back/target/classes
+            -Dsonar.projectName="BobApp back"
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # Needed to get PR information, if any
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        run: mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=ESrebuff_Gerez-un-projet-collaboratif-en-int-grant-une-demarche-CI-CD
-  # analyze-front:
-  #   runs-on: ubuntu-latest
-  #   strategy:
-  #     matrix:
-  #       node-version: [14.x]
-  #   defaults:
-  #     run:
-  #       working-directory: ./front
-  #   steps:
-  #     - uses: actions/checkout@v3
-  #       with:
-  #         fetch-depth: 0
-  #     - name: Use Node.js ${{ matrix.node-version }}
-  #       uses: actions/setup-node@v3
-  #       with:
-  #         node-version: ${{ matrix.node-version }}
-  #     - run: npm ci
-  #     - run: npm run build
-  #     - name: Analyze on SonarCloud
-  #       uses: SonarSource/sonarcloud-github-action@master
-  #       with:
-  #         args: >
-  #           -Dsonar.projectKey=ESrebuff_Gerez-un-projet-collaboratif-en-int-grant-une-demarche-CI-CD_front
-  #           -Dsonar.organization=esrebuff
-  #           -Dsonar.projectBaseDir=front/
-  #       env:
-  #         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
-
-
-# name: Build
-# on:
-#   push:
-#     branches:
-#       - main
-#   pull_request:
-#     types: [opened, synchronize, reopened]
-# jobs:
-#   sonarcloud:
-#     name: SonarCloud
-#     runs-on: ubuntu-latest
-#     steps:
-#       - uses: actions/checkout@v3
-#         with:
-#           fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
-#       - name: SonarCloud Scan
-#         uses: SonarSource/sonarcloud-github-action@master
-#         env:
-#           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
-#           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+  analyze-front:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [14.x]
+    defaults:
+      run:
+        working-directory: ./front
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+      - run: npm ci
+      - run: npm run build
+      - name: Analyze on SonarCloud
+        uses: SonarSource/sonarcloud-github-action@master
+        with:
+          args: >
+            -Dsonar.projectKey=ESrebuff_Gerez-un-projet-collaboratif-en-int-grant-une-demarche-CI-CD
+            -Dsonar.organization=esrebuff
+            -Dsonar.projectBaseDir=front/
+            -Dsonar.projectName="BobApp front"
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
