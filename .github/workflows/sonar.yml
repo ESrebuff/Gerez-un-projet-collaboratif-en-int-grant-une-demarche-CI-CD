@@ -2,13 +2,12 @@ name: SonarCloud
 on:
   push:
     branches:
-      - main
+      - master
   pull_request:
     types: [opened, synchronize, reopened]
-
 jobs:
-  backend-analysis:
-    name: Analyse Backend Java
+  build:
+    name: Build and analyze
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -19,7 +18,7 @@ jobs:
         with:
           java-version: 17
           distribution: 'zulu' # Alternative distribution options are available.
-      - name: Cache Maven packages
+      - name: Cache SonarCloud packages
         uses: actions/cache@v3
         with:
           path: ~/.sonar/cache
@@ -33,27 +32,6 @@ jobs:
           restore-keys: ${{ runner.os }}-m2
       - name: Build and analyze
         env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         run: mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=esrebuff_bobapp-back
-
-  # front-end:
-  #   name: Front-end
-  #   runs-on: ubuntu-latest
-  #   defaults:
-  #     run:
-  #       working-directory: ./front
-  #   steps:
-  #     - uses: actions/checkout@master
-  #       with:
-  #         fetch-depth: 0
-
-  #     - name: SonarCloud Scan
-  #       uses: sonarsource/sonarcloud-github-action@master
-  #       with:
-  #         projectBaseDir: front
-  #         args: >
-  #           -Dsonar.organization=paulmarniquet
-  #           -Dsonar.projectKey=bobapp_frontend
-  #           -Dsonar.sources=src/
-  #       env:
-  #         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
