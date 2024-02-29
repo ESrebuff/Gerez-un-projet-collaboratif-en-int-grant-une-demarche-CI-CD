@@ -38,21 +38,30 @@ jobs:
         working-directory: back
         run: mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=esrebuff_bobapp-back
 
-  sonarcloud:
-    name: SonarCloud front
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-        with:
-          fetch-depth: 0 # Shallow clones should be disabled for a better relevancy of analysis
-      - name: Setup Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: "14" # Remplacez '14' par la version de Node.js utilisée par votre projet
-      - name: Install dependencies and run SonarCloud Scan
-        working-directory: front
-        run: |
-          npm install
-          npm run sonar-scanner
-        env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+  analyze-front:
+      runs-on: ubuntu-latest
+      strategy:
+        matrix:
+          node-version: [14.x]
+      defaults:
+        run:
+          working-directory: ./front
+      steps:
+        - uses: actions/checkout@v3
+          with:
+            fetch-depth: 0
+        - name: Use Node.js ${{ matrix.node-version }}
+          uses: actions/setup-node@v3
+          with:
+            node-version: ${{ matrix.node-version }}
+        - run: npm ci
+        - run: npm run build
+        - name: Analyze on SonarCloud
+          uses: SonarSource/sonarcloud-github-action@master
+          with:
+            args: >
+              -Dsonar.projectKey=esrebuff_bobapp-front
+              -Dsonar.organization=esrebuff
+              -Dsonar.projectBaseDir=front/
+          env:
+            SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
