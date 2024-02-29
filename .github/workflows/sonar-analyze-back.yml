@@ -28,16 +28,9 @@ jobs:
           path: ~/.m2
           key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
           restore-keys: ${{ runner.os }}-m2
-      - name: Build with Maven
-        run: mvn clean verify
-      - name: Analyze on SonarCloud
-        uses: SonarSource/sonarcloud-github-action@master
-        with:
-          args: >
-            -Dsonar.projectKey=ESrebuff_Gerez-un-projet-collaboratif-en-int-grant-une-demarche-CI-CD
-            -Dsonar.organization=esrebuff
-            -Dsonar.java.binaries=./back/target/classes
-            -Dsonar.sources=./back
-            -Dsonar.exclusions=**/front/**/*
+      - name: Build and analyze with Maven
+        run: mvn clean verify org.sonarsource.scanner.maven:sonar:sonar -Dsonar.projectKey=${{ env.SONAR_PROJECT_KEY }} -Dsonar.organization=${{ env.SONAR_ORGANIZATION }} -Dsonar.host.url=${{ env.SONAR_HOST_URL }} -Dsonar.login=${{ secrets.SONAR_TOKEN }}
         env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_PROJECT_KEY: ESrebuff_Gerez-un-projet-collaboratif-en-int-grant-une-demarche-CI-CD
+          SONAR_ORGANIZATION: esrebuff
+          SONAR_HOST_URL: https://sonarcloud.io
