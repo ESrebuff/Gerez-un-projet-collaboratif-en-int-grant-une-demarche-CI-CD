@@ -34,8 +34,10 @@ jobs:
         uses: SonarSource/sonarcloud-github-action@master
         with:
           args: >
-            -Dsonar.projectKey=ESrebuff_Gerez-un-projet-collaboratif-en-int-grant-une-demarche-CI-CD-back
+            -Dsonar.projectKey=ESrebuff_Gerez-un-projet-collaboratif-en-int-grant-une-demarche-CI-CD
             -Dsonar.organization=esrebuff
             -Dsonar.java.binaries=./back/target/classes
+            -Dsonar.sources=./back
+            -Dsonar.exclusions=**/front/**/*
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
