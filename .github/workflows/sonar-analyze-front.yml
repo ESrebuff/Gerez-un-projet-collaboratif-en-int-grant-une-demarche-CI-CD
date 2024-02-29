@@ -19,7 +19,6 @@ jobs:
       - uses: actions/checkout@v3
         with:
           fetch-depth: 0
-      - run: npm cache clean --force
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v3
         with:
@@ -34,6 +33,6 @@ jobs:
             -Dsonar.organization=esrebuff
             -Dsonar.sources=./front
             -Dsonar.exclusions=**/back/**/*
-            -Dsonar.projectBaseDir=./front
+            -Dsonar.projectBaseDir=front/
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
