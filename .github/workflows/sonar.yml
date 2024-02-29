@@ -49,9 +49,10 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: "14" # Remplacez '14' par la version de Node.js utilisée par votre projet
-      - name: Install dependencies
+      - name: Install dependencies and run SonarCloud Scan
         working-directory: front
-        run: npm install
-        run: npm run sonar-scanner
+        run: |
+          npm install
+          npm run sonar-scanner
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
