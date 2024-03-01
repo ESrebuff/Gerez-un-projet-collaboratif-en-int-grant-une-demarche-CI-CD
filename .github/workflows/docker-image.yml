@@ -1,5 +1,4 @@
-name: Build and dockerize the app
-
+name: Build and push Docker images
 on:
   push:
     branches: ["main"]
