@@ -83,3 +83,4 @@ jobs:
           context: ./front
           push: true
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/bobapp-front:latest
+          
